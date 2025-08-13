@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IP Monitor</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    #output {
+      background: #f4f4f4;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Info Pengunjung</h1>
+  <div id="output">Memuat informasi...</div>
+  <div id="error" class="error"></div>
+
+  <script>
+    // Konfigurasi Firebase yang benar
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-fZD-1rLz5eQU2vPfZPmHCxY5CTz7VLo",
+      authDomain: "control-jauhh.firebaseapp.com",
+      databaseURL: "https://control-jauhh-default-rtdb.asia-southeast1.firebasedatabase.app", // DIUBAH KE URL YANG BENAR
+      projectId: "control-jauhh",
+      storageBucket: "control-jauhh.firebasestorage.app",
+      messagingSenderId: "965231060363",
+      appId: "1:965231060363:web:3141b1bb3b59acc2f3fb8e"
+    };
+
+    try {
+      // Inisialisasi Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+
+      // Mengambil data IP pengguna
+      fetch('https://ipapi.co/json/')
+        .then(res => {
+          if (!res.ok) throw new Error('Gagal mengambil data IP');
+          return res.json();
+        })
+        .then(data => {
+          // Menampilkan data ke pengguna
+          document.getElementById('output').innerHTML = `
+            <p><strong>IP:</strong> ${data.ip}</p>
+            <p><strong>Lokasi:</strong> ${data.city}, ${data.country_name}</p>
+            <p><strong>ISP:</strong> ${data.org}</p>
+            <p><small>Data ini disimpan untuk keperluan administrasi</small></p>
+          `;
+
+          // Menyimpan data ke Firebase
+          return db.ref('visitors').push({
+            ip: data.ip,
+            city: data.city,
+            country: data.country_name,
+            org: data.org,
+            isp: data.org, // Duplikat untuk kompatibilitas
+            location: `${data.city}, ${data.country_name}`, // Tambahan untuk admin
+            timestamp: firebase.database.ServerValue.TIMESTAMP // Waktu server Firebase
+          });
+        })
+        .then(() => console.log('Data tersimpan ke Firebase'))
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('error').textContent = 'Error: ' + error.message;
+          document.getElementById('output').innerHTML = 'Gagal memuat informasi.';
+        });
+
+    } catch (error) {
+      document.getElementById('error').textContent = 'Error inisialisasi Firebase: ' + error.message;
+      document.getElementById('output').innerHTML = 'Sistem sedang mengalami gangguan.';
+    }
+  </script>
+</body>
+</html>

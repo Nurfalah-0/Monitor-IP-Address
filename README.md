@@ -67,6 +67,14 @@ Base URL: `http://localhost:8000`
 
 ## 🚀 Cara Menjalankan
 
+### Deploy frontend ke Netlify
+
+Deploy melalui repositori Git agar Netlify memasang dependensi dan membangun Next.js. Konfigurasi di `netlify.toml` menetapkan folder aplikasi `monitor-ip`, perintah `npm ci && npm run build`, dan folder hasil build `.next`. Langkah `npm ci` memasang dependensi sesuai lockfile sebelum build, termasuk saat deploy melalui CLI yang belum memasang dependensi aplikasi. Adapter Next.js Netlify menangani halaman dan routing secara otomatis.
+
+Mengunggah folder kode sumber melalui drag-and-drop tidak menjalankan build Next.js dan dapat menghasilkan halaman **Page not found**. Setelah perubahan didorong ke branch `main`, periksa bahwa deploy terbaru berhasil, lalu buka URL situs atau `/admin`.
+
+Konfigurasi ini men-deploy frontend. Backend Django di `backend/` tidak otomatis ikut berjalan. Agar fitur pencatatan dan daftar pengunjung berfungsi online, `NEXT_PUBLIC_API_URL` harus menunjuk ke URL backend HTTPS yang aktif sebelum frontend dibangun. Nilai bawaan `http://localhost:8000` hanya cocok untuk pengembangan lokal. Jika URL API berubah, lakukan deploy ulang.
+
 ### 1️⃣ Backend Django (port 8000)
 
 ```powershell

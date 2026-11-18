@@ -1,0 +1,21 @@
+# Python / Django backend
+venv/
+backend/venv/
+__pycache__/
+*.py[cod]
+backend/db.sqlite3
+backend/.env
+backend/staticfiles/
+
+# Firebase service account key (RAHASIA — jangan pernah di-commit!)
+*serviceAccount*.json
+*firebase-adminsdk*.json
+
+# Frontend Next.js (juga punya .gitignore sendiri)
+monitor-ip/node_modules/
+monitor-ip/.next/
+monitor-ip/.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
